@@ -24,7 +24,7 @@ const ResultPage: React.FC = () => {
     const [fortune, setFortune] = useState<FortuneData | null>(null);
     const [fortuneIndices, setFortuneIndices] = useState<FortuneIndices | null>(null);
     const [viewCount, setViewCount] = useState(0);
-    const [feedbackGiven, setFeedbackGiven] = useState(false);
+    const [feedbackSelection, setFeedbackSelection] = useState<'like' | 'dislike' | null>(null);
     const [toastMessage, setToastMessage] = useState('');
     const [showToast, setShowToast] = useState(false);
 
@@ -92,8 +92,8 @@ const ResultPage: React.FC = () => {
     };
 
     const handleFeedback = (type: 'like' | 'dislike') => {
-        if (feedbackGiven) return;
-        setFeedbackGiven(true);
+        if (feedbackSelection) return;
+        setFeedbackSelection(type);
         recordFeedback(type);
         trackEvent('feedback', { type, fortune_id: fortune?.id });
         showToastWithMessage('feedbackToast');
@@ -152,8 +152,32 @@ const ResultPage: React.FC = () => {
                 <section className="text-center mb-8">
                     <p className="text-gray-600 mb-3">{t('feedbackPrompt')}</p>
                     <div className="flex justify-center gap-4">
-                        <button onClick={() => handleFeedback('like')} disabled={feedbackGiven} className={`text-3xl transition-transform hover:scale-110 ${feedbackGiven ? 'opacity-50 cursor-not-allowed' : ''}`}>👍</button>
-                        <button onClick={() => handleFeedback('dislike')} disabled={feedbackGiven} className={`text-3xl transition-transform hover:scale-110 ${feedbackGiven ? 'opacity-50 cursor-not-allowed' : ''}`}>👎</button>
+                        <button
+                            onClick={() => handleFeedback('like')}
+                            disabled={!!feedbackSelection}
+                            className={`text-3xl transition-all duration-300 ${
+                                !feedbackSelection ? 'hover:scale-110' : ''
+                            } ${
+                                feedbackSelection === 'like' ? 'scale-110' : ''
+                            } ${
+                                feedbackSelection && feedbackSelection !== 'like' ? 'opacity-50 scale-90' : ''
+                            }`}
+                        >
+                            👍
+                        </button>
+                        <button
+                            onClick={() => handleFeedback('dislike')}
+                            disabled={!!feedbackSelection}
+                            className={`text-3xl transition-all duration-300 ${
+                                !feedbackSelection ? 'hover:scale-110' : ''
+                            } ${
+                                feedbackSelection === 'dislike' ? 'scale-110' : ''
+                            } ${
+                                feedbackSelection && feedbackSelection !== 'dislike' ? 'opacity-50 scale-90' : ''
+                            }`}
+                        >
+                            👎
+                        </button>
                     </div>
                 </section>
 

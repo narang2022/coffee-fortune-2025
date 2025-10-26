@@ -1,33 +1,3 @@
-
-// import React from 'react';
-// import { HashRouter, Routes, Route } from 'react-router-dom';
-// import { LanguageProvider } from './context/LanguageContext';
-// import IntroPage from './pages/IntroPage';
-// import LoadingPage from './pages/LoadingPage';
-// import ResultPage from './pages/ResultPage';
-
-// function App() {
-//   return (
-//     <LanguageProvider>
-//       <div className="w-full min-h-screen max-w-lg mx-auto bg-[#F8F5F2]">
-//         <HashRouter>
-//           <Routes>
-//             <Route path="/" element={<IntroPage />} />
-//             <Route path="/loading" element={<LoadingPage />} />
-//             <Route path="/result" element={<ResultPage />} />
-//           </Routes>
-//         </HashRouter>
-//       </div>
-//     </LanguageProvider>
-//   );
-// }
-
-// export default App;
-
-
-// src/App.tsx
-
-
 import React from 'react';
 import {
   HashRouter,

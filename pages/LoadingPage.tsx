@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
+// FIX: Reordered the import of global type definitions to occur after React is imported.
+// This ensures that the JSX namespace is available for augmentation, allowing custom elements like 'lottie-player' to be recognized.
+import '../types';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
 import { FORTUNES, LUCKY_COLORS, LUCKY_NUMBERS, LUCKY_PLACES } from '../constants';
-// FIX: Import global JSX type definitions to recognize the 'lottie-player' custom element.
-import '../types';
 
 const LoadingPage: React.FC = () => {
   const navigate = useNavigate();
@@ -47,31 +48,3 @@ const LoadingPage: React.FC = () => {
 };
 
 export default LoadingPage;
-
-// // src/pages/LoadingPage.tsx
-// import React from 'react';
-// import { useNavigate } from 'react-router-dom';
-// import { useLanguage } from '../context/LanguageContext';
-
-// const LoadingPage: React.FC = () => {
-//   const navigate = useNavigate();
-//   const { t } = useLanguage();
-
-//   React.useEffect(() => {
-//     // Guard를 통과했다는 가정 하에, 로딩 연출 후 /result로 이동
-//     const timer = setTimeout(() => {
-//       navigate('/result');
-//     }, 1500);
-
-//     return () => clearTimeout(timer);
-//   }, [navigate]);
-
-//   return (
-//     <div className="flex flex-col items-center justify-center h-[70vh]">
-//       {/* 여기에 로티나 스피너 등 로딩 연출 */}
-//       <p className="text-[#6B4F4F] mt-4">{t('loadingMessage')}</p>
-//     </div>
-//   );
-// };
-
-// export default LoadingPage;

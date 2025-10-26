@@ -32,34 +32,3 @@ const IntroPage: React.FC = () => {
 };
 
 export default IntroPage;
-
-// // src/pages/IntroPage.tsx
-// import React from 'react';
-// import { useNavigate } from 'react-router-dom';
-// import { useLanguage } from '../context/LanguageContext';
-
-// const IntroPage: React.FC = () => {
-//   const navigate = useNavigate();
-//   const { t } = useLanguage();
-
-//   const handleView = () => {
-//     // fromIntro: true 를 state로 전달 → LoadingGuard 통과 키
-//     navigate('/loading', { state: { fromIntro: true } });
-//   };
-
-//   return (
-//     <div className="px-6 py-10">
-//       <h1 className="text-2xl font-semibold text-[#6B4F4F] mb-6">
-//         {t('introTitle')}
-//       </h1>
-//       <button
-//         onClick={handleView}
-//         className="bg-[#6B4F4F] text-white px-8 py-3 rounded-full transition-transform hover:scale-105 active:scale-95"
-//       >
-//         {t('viewFortuneButton')}
-//       </button>
-//     </div>
-//   );
-// };
-
-// export default IntroPage;
