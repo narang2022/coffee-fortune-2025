@@ -1,0 +1,77 @@
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useLanguage } from '../context/LanguageContext';
+import { FORTUNES, LUCKY_COLORS, LUCKY_NUMBERS, LUCKY_PLACES } from '../constants';
+// FIX: Import global JSX type definitions to recognize the 'lottie-player' custom element.
+import '../types';
+
+const LoadingPage: React.FC = () => {
+  const navigate = useNavigate();
+  const { language, t } = useLanguage();
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      // Generate random fortune
+      const fortuneId = Math.floor(Math.random() * FORTUNES[language].length);
+      const colorIndex = Math.floor(Math.random() * LUCKY_COLORS[language].length);
+      const luckyColor = LUCKY_COLORS[language][colorIndex];
+      const luckyNumber = LUCKY_NUMBERS[Math.floor(Math.random() * LUCKY_NUMBERS.length)];
+      const luckyPlace = LUCKY_PLACES[language][Math.floor(Math.random() * LUCKY_PLACES[language].length)];
+      
+      const params = new URLSearchParams({
+        id: fortuneId.toString(),
+        color: luckyColor.name,
+        num: luckyNumber.toString(),
+        place: luckyPlace
+      });
+
+      navigate(`/result?${params.toString()}`);
+    }, 1800); // 1.8 seconds for animation
+
+    return () => clearTimeout(timer);
+  }, [navigate, language]);
+
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center p-8 text-center bg-gradient-to-b from-[#EFEBE6] to-[#F8F5F2] text-[#483434]">
+      <div className="w-48 h-48">
+        <lottie-player
+            src="https://raw.githubusercontent.com/narang2022/coffee-fortune-assets-2025/main/loading-coffee-animation.json"
+            background="transparent"
+            speed="1"
+            autoplay
+        ></lottie-player>
+      </div>
+      <p className="mt-4 text-lg">{t('loadingMessage')}</p>
+    </div>
+  );
+};
+
+export default LoadingPage;
+
+// // src/pages/LoadingPage.tsx
+// import React from 'react';
+// import { useNavigate } from 'react-router-dom';
+// import { useLanguage } from '../context/LanguageContext';
+
+// const LoadingPage: React.FC = () => {
+//   const navigate = useNavigate();
+//   const { t } = useLanguage();
+
+//   React.useEffect(() => {
+//     // Guard를 통과했다는 가정 하에, 로딩 연출 후 /result로 이동
+//     const timer = setTimeout(() => {
+//       navigate('/result');
+//     }, 1500);
+
+//     return () => clearTimeout(timer);
+//   }, [navigate]);
+
+//   return (
+//     <div className="flex flex-col items-center justify-center h-[70vh]">
+//       {/* 여기에 로티나 스피너 등 로딩 연출 */}
+//       <p className="text-[#6B4F4F] mt-4">{t('loadingMessage')}</p>
+//     </div>
+//   );
+// };
+
+// export default LoadingPage;

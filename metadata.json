@@ -1,0 +1,5 @@
+{
+  "name": "Today's horoscope",
+  "description": "A mini web interaction service for cafe customers to enjoy a random daily fortune, lucky items, and see new menu items while they wait.",
+  "requestFramePermissions": []
+}
