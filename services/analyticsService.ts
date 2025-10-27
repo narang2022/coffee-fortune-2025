@@ -1,4 +1,4 @@
-import { ga4MeasurementId, isGa4Enabled } from '../config';
+import { isGa4Enabled } from '../config';
 
 // FIX: Moved the global declaration to the top level of the file.
 // An ambient module declaration is only allowed at the top level.
@@ -10,46 +10,26 @@ declare global {
   }
 }
 
-let isInitialized = false;
-
-// This function dynamically injects the GA4 script tag into the document head.
-// It's designed to run only once.
-const initializeGa4 = () => {
-  if (isInitialized || !isGa4Enabled) {
-    return;
-  }
-
-  const script = document.createElement('script');
-  script.async = true;
-  script.src = `https://www.googletagmanager.com/gtag/js?id=${ga4MeasurementId}`;
-  document.head.appendChild(script);
-
-  window.dataLayer = window.dataLayer || [];
-  // Set up the gtag function on the window object
-  window.gtag = function(...args: any[]) {
-    window.dataLayer.push(arguments);
-  };
-  window.gtag('js', new Date());
-  window.gtag('config', ga4MeasurementId);
-
-  isInitialized = true;
-  console.log(`[GA4] Initialized for ID: ${ga4MeasurementId}`);
-};
-
 /**
- * Tracks an event using GA4.
- * If GA4 is not configured via environment variables, it logs the event to the console.
- * @param eventName - The name of the event to track.
- * @param params - An optional object of event parameters.
+ * Pushes an event to the dataLayer for Google Tag Manager to process.
+ * If GA4/GTM is not configured via environment variables, it logs the event to the console.
+ * @param eventName - The name of the event. This becomes the 'event' key in the dataLayer object,
+ * which can be used to fire triggers in GTM.
+ * @param params - An optional object of event parameters that will be pushed to the dataLayer.
  */
 export const trackEvent = (eventName: string, params?: { [key: string]: any }) => {
-  // Initialize GA4 on the first event track call.
-  initializeGa4();
+  // GTM's snippet in index.html initializes window.dataLayer. We just ensure it's an array.
+  window.dataLayer = window.dataLayer || [];
 
-  if (isGa4Enabled && typeof window.gtag === 'function') {
-    window.gtag('event', eventName, params);
+  if (isGa4Enabled) {
+    // The standard way to send events to GTM is by pushing an object
+    // to the dataLayer with an 'event' key.
+    window.dataLayer.push({
+      event: eventName,
+      ...params,
+    });
   } else {
-    // Fallback for local development or if GA4 is not set up
-    console.log(`[GA4 Mock Event] ${eventName}`, params);
+    // Fallback for local development or if GTM is not set up
+    console.log(`[GTM Mock Event] ${eventName}`, params);
   }
 };
