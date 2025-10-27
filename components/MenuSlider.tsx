@@ -1,13 +1,16 @@
 import React, { useEffect, useRef } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Swiper } from 'swiper';
 import { Autoplay, Pagination } from 'swiper/modules';
 
 import { useLanguage } from '../context/LanguageContext';
 import { MENU_ITEMS } from '../constants';
+import { trackEvent } from '../services/analyticsService';
 
 const MenuSlider: React.FC = () => {
   const swiperRef = useRef<HTMLDivElement>(null);
   const { language } = useLanguage();
+  const [searchParams] = useSearchParams();
 
   useEffect(() => {
     if (swiperRef.current) {
@@ -23,13 +26,23 @@ const MenuSlider: React.FC = () => {
           clickable: true,
         },
         spaceBetween: 20,
+        on: {
+          slideChange: (swiper) => {
+            const currentItem = MENU_ITEMS[swiper.realIndex];
+            const utmSource = searchParams.get('utm_source');
+            trackEvent('menu_slide_view', {
+              menu_name: currentItem.name[language],
+              ...(utmSource && { utm_source: utmSource }),
+            });
+          },
+        },
       });
 
       return () => {
         swiper.destroy();
       };
     }
-  }, []);
+  }, [language, searchParams]);
 
   return (
     <div className="swiper mb-0 pb-0" ref={swiperRef}>

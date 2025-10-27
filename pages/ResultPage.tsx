@@ -72,6 +72,7 @@ const ResultPage: React.FC = () => {
             const { id, colorIndex, placeIndex, luckyNumber } = fortuneIndices;
             const luckyColorData = LUCKY_COLORS[language][colorIndex];
             const luckyPlace = LUCKY_PLACES[language][placeIndex];
+            const utmSource = searchParams.get('utm_source');
 
             setFortune({
                 id,
@@ -81,9 +82,15 @@ const ResultPage: React.FC = () => {
                 luckyNumber,
                 luckyPlace,
             });
-            trackEvent('view_fortune', { fortune_id: id, language });
+            trackEvent('fortune_view', {
+                fortune_id: id,
+                lucky_color: luckyColorData.name,
+                lucky_number: luckyNumber,
+                lucky_place: luckyPlace,
+                ...(utmSource && { utm_source: utmSource }),
+            });
         }
-    }, [fortuneIndices, language]);
+    }, [fortuneIndices, language, searchParams]);
     
     const showToastWithMessage = (messageKey: keyof typeof UI_TEXT) => {
         setToastMessage(t(messageKey));
@@ -95,7 +102,13 @@ const ResultPage: React.FC = () => {
         if (feedbackSelection) return;
         setFeedbackSelection(type);
         recordFeedback(type);
-        trackEvent('feedback', { type, fortune_id: fortune?.id });
+
+        const utmSource = searchParams.get('utm_source');
+        trackEvent('feedback_click', {
+            type,
+            fortune_id: fortune?.id,
+            ...(utmSource && { utm_source: utmSource }),
+        });
         showToastWithMessage('feedbackToast');
     };
 

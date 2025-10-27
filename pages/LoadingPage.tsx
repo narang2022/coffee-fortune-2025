@@ -1,6 +1,6 @@
+// FIX: Reordered imports to load React before '../types'.
+// This ensures React's global JSX types are available for augmentation, resolving the error for the 'lottie-player' custom element.
 import React, { useEffect } from 'react';
-// FIX: Reordered the import of global type definitions to occur after React is imported.
-// This ensures that the JSX namespace is available for augmentation, allowing custom elements like 'lottie-player' to be recognized.
 import '../types';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
