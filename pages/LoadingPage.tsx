@@ -1,6 +1,6 @@
-// FIX: Swapped import order to load '../types' before 'react'. This ensures the JSX namespace augmentations for custom elements like 'lottie-player' are applied before React is imported in this module, resolving the type error.
-import '../types';
+// FIX: Reordered imports to load React before '../types'. This ensures React's global JSX namespace is available for augmentation before the custom 'lottie-player' element is used, resolving the type error.
 import React, { useEffect } from 'react';
+import '../types';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
 import { FORTUNES, LUCKY_COLORS, LUCKY_NUMBERS, LUCKY_PLACES } from '../constants';

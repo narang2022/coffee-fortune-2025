@@ -18,8 +18,10 @@ interface DailyStats {
 
 // --- Mock Implementation (localStorage Fallback) ---
 const getTodayDateString = () => {
-  const today = new Date();
-  return today.toISOString().split('T')[0]; // YYYY-MM-DD
+  // Use toLocaleDateString with the 'Asia/Seoul' timezone to get the date based on KST.
+  // This ensures the daily count resets at midnight in Korea (KST), not UTC midnight.
+  // The 'en-CA' locale is a reliable way to get the YYYY-MM-DD format.
+  return new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Seoul' });
 };
 
 const getStoredStats = (): DailyStats => {
@@ -37,7 +39,7 @@ const setStoredStats = (stats: DailyStats) => {
 
 // --- Firebase Singleton & Initialization ---
 let databaseInstance: any = null;
-let initializePromise: Promise<any> | null = null;
+let initializePromise: Promise<any | null> = null;
 
 const loadScript = (src: string): Promise<void> => {
   return new Promise((resolve, reject) => {
