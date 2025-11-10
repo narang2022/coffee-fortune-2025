@@ -18,10 +18,17 @@ interface DailyStats {
 
 // --- Mock Implementation (localStorage Fallback) ---
 const getTodayDateString = () => {
-  // Use toLocaleDateString with the 'Asia/Seoul' timezone to get the date based on KST.
-  // This ensures the daily count resets at midnight in Korea (KST), not UTC midnight.
-  // The 'en-CA' locale is a reliable way to get the YYYY-MM-DD format.
-  return new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Seoul' });
+  // KST is UTC+9. This method creates a KST date string in YYYY-MM-DD format
+  // robustly, without relying on locale-specific formatting.
+  const now = new Date();
+  const utc = now.getTime() + now.getTimezoneOffset() * 60 * 1000;
+  const kstDate = new Date(utc + 9 * 60 * 60 * 1000);
+
+  const year = kstDate.getFullYear();
+  const month = String(kstDate.getMonth() + 1).padStart(2, '0');
+  const day = String(kstDate.getDate()).padStart(2, '0');
+
+  return `${year}-${month}-${day}`;
 };
 
 const getStoredStats = (): DailyStats => {
@@ -101,19 +108,20 @@ export const getTodayStats = async (): Promise<DailyStats> => {
   return snapshot.val() || { views: 0, likes: 0, dislikes: 0 };
 };
 
-export const incrementViewCount = async (): Promise<void> => {
+export const incrementViewCount = async (): Promise<number> => {
   const db = await getDatabase();
   if (!db) {
     console.log('[Firebase Mock] Incrementing view count in localStorage.');
     const stats = getStoredStats();
     stats.views += 1;
     setStoredStats(stats);
-    return Promise.resolve();
+    return Promise.resolve(stats.views);
   }
 
   const date = getTodayDateString();
   const ref = db.ref(`daily_stats/${date}/views`);
-  await ref.transaction((currentValue: number | null) => (currentValue || 0) + 1);
+  const transactionResult = await ref.transaction((currentValue: number | null) => (currentValue || 0) + 1);
+  return transactionResult.snapshot.val() || 1;
 };
 
 export const recordFeedback = async (type: 'like' | 'dislike'): Promise<void> => {

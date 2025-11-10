@@ -1,3 +1,5 @@
+/// <reference types="react" />
+
 // FIX: Import React to use its types within the global JSX namespace definition.
 import React from 'react';
 

@@ -3,7 +3,7 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
 import { FORTUNES, LUCKY_COLORS, LUCKY_PLACES, UI_TEXT } from '../constants';
 import { FortuneData, Language } from '../types';
-import { getTodayStats, incrementViewCount, recordFeedback } from '../services/firebaseService';
+import { incrementViewCount, recordFeedback } from '../services/firebaseService';
 import { trackEvent } from '../services/analyticsService';
 import MenuSlider from '../components/MenuSlider';
 import Toast from '../components/Toast';
@@ -54,17 +54,15 @@ const ResultPage: React.FC = () => {
                     placeIndex,
                     luckyNumber: parseInt(num, 10),
                 });
-                incrementViewCount();
+                incrementViewCount().then(newCount => {
+                    setViewCount(newCount);
+                });
             } else {
                 navigate('/');
             }
         } else {
             navigate('/');
         }
-        
-        getTodayStats().then(stats => {
-            setViewCount(stats.views);
-        });
     }, [searchParams, navigate]);
 
     useEffect(() => {
